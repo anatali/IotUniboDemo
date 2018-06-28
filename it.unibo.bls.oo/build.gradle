@@ -5,14 +5,28 @@ USAGE:
  	gradle build 
 */
 
+buildscript {
+	// This block is for adding dependencies *to the build itself*
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
+	}
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea' // plugin for IDE IntelliJ IDEA
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 version = "1.0"
 sourceCompatibility = "1.8"
 sourceSets {
     main {
         java { srcDirs = ['src' ] 	}
+		resources { srcDir 'resources' }
     }
     test {
         java { srcDirs = ['test' ]   }
@@ -25,6 +39,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
 	compile group: 'com.typesafe.akka', name: 'akka-actor_2.11', version: '2.4.8'
 	compile group: 'com.typesafe.akka', name: 'akka-remote_2.11', version: '2.4.9-RC2'
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+}
+
+bootJar {
+	mainClassName = 'it.unibo.bls.spring.buttonService.MainButtonService'
+	baseName = 'unibo-button'
+	version =  '1.0.0'
 }
 
 test {

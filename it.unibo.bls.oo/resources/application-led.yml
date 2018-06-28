@@ -1,0 +1,2 @@
+spring.application.name: ledservice
+server.port: 8081

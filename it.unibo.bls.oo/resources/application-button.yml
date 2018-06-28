@@ -1,0 +1,3 @@
+spring.application.name: buttonservice
+server.port: 8080
+LED_SERVICE_URI: "http://localhost:8081/led"
