@@ -2,6 +2,7 @@
  * build.gradle
  * This build file was written by the application designer.
 USAGE:	 
+    gradle build eclipse
  	gradle build 
 */
 
@@ -11,15 +12,15 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")   //by RC
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'idea' // plugin for IDE IntelliJ IDEA
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'                     //by RC IDE IntelliJ IDEA
+apply plugin: 'org.springframework.boot' //by RC
+apply plugin: 'io.spring.dependency-management' //by RC
 
 version = "1.0"
 sourceCompatibility = "1.8"

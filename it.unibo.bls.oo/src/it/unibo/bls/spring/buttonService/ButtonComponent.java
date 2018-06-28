@@ -4,7 +4,6 @@ import it.unibo.bls.applLogic.BlsApplicationLogic;
 import it.unibo.bls.devices.ButtonAsGui;
 import it.unibo.bls.interfaces.ILed;
 import org.springframework.stereotype.Component;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
