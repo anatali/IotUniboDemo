@@ -1,5 +1,5 @@
 /*
-C:\aLabDemoIotGit\IotUniboDemo\it.unibo.bls.aws\awsSdk\testAwsCall.js
+C:\aLabDemoIotGit\IotUniboDemo\it.unibo.bls.aws\awsSdk\blsROnOffCall.js
 */
 var AWS = require('aws-sdk');
 
@@ -13,7 +13,7 @@ AWS.config.update({
 
 var lambda = new AWS.Lambda();
 var params = {
-  FunctionName: 'ClosureExample', /* required */
+  FunctionName: 'blsROnOff', /* required */
   Payload: "{}"
 };
 lambda.invoke(params, function(err, data) {
