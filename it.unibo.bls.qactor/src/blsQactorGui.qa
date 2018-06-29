@@ -1,0 +1,53 @@
+System blsQactorGui  
+Event usercmd      : usercmd(CMD)  				//from web gui              
+Dispatch turn      : turn(X) 					// X = on/off         
+ 
+Context ctxBlsQactorGui ip [ host="localhost"  port=8059 ]      
+
+
+QActor buttonqagui  context ctxBlsQactorGui{  
+	Plan init normal[
+		javaRun  it.unibo.buttonqagui.blsGuiFactory.createButton("press");
+		delay 600000
+	]
+}  
+
+QActor controlqagui  context ctxBlsQactorGui{  
+	Plan init normal[  
+		println("controlqa STARTS")
+	]
+	transition stopAfter 600000
+	whenEvent usercmd -> pressedOdd
+	
+	Plan pressedOdd [
+		forward ledqagui -m turn : turn(on)
+	] 
+	transition stopAfter 600000
+
+	whenEvent usercmd -> pressedEven
+	
+	Plan pressedEven[
+		forward ledqagui -m turn : turn(off)		
+	]
+	switchTo init 
+}    
+
+QActor ledqagui  context ctxBlsQactorGui{  
+	Plan init normal[
+		javaRun it.unibo.buttonqagui.blsGuiFactory.createLed();
+		javaRun it.unibo.buttonqagui.blsGuiFactory.turnOff();
+		println("ledqa STARTS")
+	] 
+	switchTo work  
+	
+	Plan work[]
+	transition stopAfter 60000
+	whenMsg turn -> doJob
+	finally repeatPlan
+	
+	Plan doJob resumeLastPlan[
+		onMsg turn : turn(off) -> javaRun it.unibo.buttonqagui.blsGuiFactory.turnOff();
+		onMsg turn : turn(on)  -> javaRun it.unibo.buttonqagui.blsGuiFactory.turnOn()
+	]
+	
+}  

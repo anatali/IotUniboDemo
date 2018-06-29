@@ -52,40 +52,11 @@ bootJar {
 	version =  '1.0.0'
 }
 
-test {
-	testLogging {
-		outputs.upToDateWhen { false }		
-		showStandardStreams = true		
-		events 'failed' , 'passed' //,  'started', 'skipped', 		
-	}
-	
- 	include '**/Test*.class'
-	test.afterSuite { TestDescriptor suite, TestResult result -> //add closure to be notified
-	if( !suite.parent && result.getTestCount() > 0) { //there is at least one test
-		long elapsedTestTime = result.getEndTime() - result.getStartTime()
- 		System.out.println("""AFTERTEST Elapsed time for execution of ${result.getTestCount()} test(s):  $elapsedTestTime ms""");
-	}
-	}
-}
- 
-apply plugin: 'jacoco'
 
-test.finalizedBy jacocoTestReport
-
-jacocoTestReport {
-     reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
-    }
-}
-
-
-/*
 jar {
     manifest {
         attributes "Class-Path": configurations.compile.collect { "lib/"+it.getName() }.join(' ')
         attributes 'Main-Class': 'aLabDemoIot.MainFirst'
     }
 } 
-*/
+

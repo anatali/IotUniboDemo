@@ -1,0 +1,6 @@
+plan(1,init, sentence(true,not here StateMoveNormal,'','' ))
+plan(2,init, sentence(true,not here StateMoveNormal,'','' ))
+plan(3,init, sentence(true,move(print("ledqa STARTS")),'','' ))
+plan(1,doJob, sentence(true,msgswitch(turn, turn( off) , not here StateMoveNormal),'','' ))
+plan(2,doJob, sentence(true,msgswitch(turn, turn( on) , not here StateMoveNormal),'','' ))
+plan(3,doJob, sentence(true,move(resumeplan),'','' ))

@@ -1,0 +1,23 @@
+System blsQactor                
+Dispatch turn : turn(X) // X = on/off         
+ 
+Context blsQactor ip [ host="localhost"  port=8019 ]  -g cyan  //-httpserver    
+
+
+QActor buttonqa  context blsQactor{  
+	Plan init normal[
+		println("buttonqa STARTS")
+	]
+}  
+
+QActor controlqa  context blsQactor{  
+	Plan init normal[
+		println("controlqa STARTS")
+	]
+}  
+
+QActor ledqa  context blsQactor{  
+	Plan init normal[
+		println("ledqa STARTS")
+	]
+}  

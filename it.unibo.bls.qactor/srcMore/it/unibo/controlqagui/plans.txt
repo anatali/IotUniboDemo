@@ -1,0 +1,3 @@
+plan(1,init, sentence(true,move(print("controlqa STARTS")),'','' ))
+plan(1,pressedOdd, sentence(true,forward(ledqagui, turn,turn( on)),'','' ))
+plan(1,pressedEven, sentence(true,forward(ledqagui, turn,turn( off)),'','' ))
