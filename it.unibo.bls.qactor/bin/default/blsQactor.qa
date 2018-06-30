@@ -1,10 +1,8 @@
 System blsQactor  
 Event usercmd      : usercmd(CMD)  				//from web gui              
 Dispatch turn      : turn(X) 					// X = on/off         
- 
-Context ctxBlsQactor ip [ host="localhost"  port=8019 ]      
 
-
+Context ctxBlsQactor ip [ host="localhost"  port=8019 ]    -httpserver  
 QActor buttonqa  context ctxBlsQactor{  
 	Plan init normal[
 		delay 1000;
@@ -15,31 +13,28 @@ QActor buttonqa  context ctxBlsQactor{
 		emit usercmd : usercmd("pressed")
 	]
 }  
-
 QActor controlqa  context ctxBlsQactor{  
 	Plan init normal[  
 		println("controlqa STARTS")
 	]
-	transition stopAfter 5000
-	whenEvent usercmd -> pressedOdd
-	
+	transition stopAfter 600000
+	whenEvent usercmd -> pressedOdd	
 	Plan pressedOdd [
+		printCurrentEvent;
 		forward ledqa -m turn : turn(on)
 	] 
-	transition stopAfter 5000
-	whenEvent usercmd -> pressedEven
-	
+	transition stopAfter 600000
+	whenEvent usercmd -> pressedEven	
 	Plan pressedEven[
 		forward ledqa -m turn : turn(off)		
 	]
 	switchTo init 
 }    
-
 QActor ledqa  context ctxBlsQactor{  
 	Plan init normal[
 		println("ledqa STARTS")
 	]
-	transition stopAfter 5000
+	transition stopAfter 600000
 	whenMsg turn : turn(X) do println (turnTheLed(X) )
 	finally repeatPlan
 }  

@@ -10,6 +10,12 @@ digraph finite_state_machine {
 	size="8,5"
 	
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
-	init [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
+	pressedOdd [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	pressedEven [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	
+	init -> handleToutBuiltIn [ label = "timeout(600000)" ][ color = green ][ fontcolor = green ]
+	pressedEven -> init [ label = "switch" ][ color = black ][ fontcolor = black ]
+	pressedOdd -> pressedEven [ label = "usercmd" ][ color = black ][ fontcolor = black ]
+	init -> pressedOdd [ label = "usercmd" ][ color = black ][ fontcolor = black ]
+	pressedOdd -> handleToutBuiltIn [ label = "timeout(600000)" ][ color = green ][ fontcolor = green ]
 }

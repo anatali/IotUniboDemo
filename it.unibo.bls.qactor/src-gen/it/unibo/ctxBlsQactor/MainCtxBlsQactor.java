@@ -8,7 +8,7 @@ public class MainCtxBlsQactor  {
 //MAIN
 public static QActorContext initTheContext() throws Exception{
 	IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
-	String webDir = null;
+	String webDir = "./srcMore/it/unibo/ctxBlsQactor";
 	return QActorContext.initQActorSystem(
 		"ctxblsqactor", "./srcMore/it/unibo/ctxBlsQactor/blsqactor.pl", 
 		"./srcMore/it/unibo/ctxBlsQactor/sysRules.pl", outEnvView,webDir,false);

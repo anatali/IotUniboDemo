@@ -56,6 +56,8 @@ public abstract class AbstractControlqa extends QActor {
 	    protected void initStateTable(){  	
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
+	    	stateTab.put("pressedOdd",pressedOdd);
+	    	stateTab.put("pressedEven",pressedEven);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -75,12 +77,49 @@ public abstract class AbstractControlqa extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"controlqa STARTS\"";
 	    	println( temporaryStr );  
-	    	repeatPlanNoTransition(pr,myselfName,"controlqa_"+myselfName,false,false);
+	    	//bbb
+	     msgTransition( pr,myselfName,"controlqa_"+myselfName,false,
+	          new StateFun[]{stateTab.get("pressedOdd") }, 
+	          new String[]{"true","E","usercmd" },
+	          600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//init
+	    
+	    StateFun pressedOdd = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp("pressedOdd",-1);
+	    	String myselfName = "pressedOdd";  
+	    	printCurrentEvent(false);
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine,"turn(X)","turn(on)", guardVars ).toString();
+	    	sendMsg("turn","ledqa", QActorContext.dispatch, temporaryStr ); 
+	    	//bbb
+	     msgTransition( pr,myselfName,"controlqa_"+myselfName,false,
+	          new StateFun[]{stateTab.get("pressedEven") }, 
+	          new String[]{"true","E","usercmd" },
+	          600000, "handleToutBuiltIn" );//msgTransition
+	    }catch(Exception e_pressedOdd){  
+	    	 println( getName() + " plan=pressedOdd WARNING:" + e_pressedOdd.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//pressedOdd
+	    
+	    StateFun pressedEven = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp("pressedEven",-1);
+	    	String myselfName = "pressedEven";  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine,"turn(X)","turn(off)", guardVars ).toString();
+	    	sendMsg("turn","ledqa", QActorContext.dispatch, temporaryStr ); 
+	    	//switchTo init
+	        switchToPlanAsNextState(pr, myselfName, "controlqa_"+myselfName, 
+	              "init",false, false, null); 
+	    }catch(Exception e_pressedEven){  
+	    	 println( getName() + " plan=pressedEven WARNING:" + e_pressedEven.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//pressedEven
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

@@ -71,11 +71,34 @@ public abstract class AbstractLedqa extends QActor {
 	    
 	    StateFun init = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_init",0);
+	     pr.incNumIter(); 	
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"ledqa STARTS\"";
 	    	println( temporaryStr );  
-	    	repeatPlanNoTransition(pr,myselfName,"ledqa_"+myselfName,false,false);
+	    	//bbb
+	     msgTransition( pr,myselfName,"ledqa_"+myselfName,false,
+	          new StateFun[]{() -> {	//AD HOC state to execute an action and resumeLastPlan
+	          try{
+	            PlanRepeat pr1 = PlanRepeat.setUp("adhocstate",-1);
+	            //ActionSwitch for a message or event
+	             if( currentMessage.msgContent().startsWith("turn") ){
+	            	String parg = "turnTheLed(X)";
+	            	/* Print */
+	            	parg =  updateVars( Term.createTerm("turn(X)"), 
+	            	                    Term.createTerm("turn(X)"), 
+	            		    		  	Term.createTerm(currentMessage.msgContent()), parg);
+	            	if( parg != null ) println( parg );
+	             }
+	            repeatPlanNoTransition(pr1,"adhocstate","adhocstate",false,true);
+	          }catch(Exception e ){  
+	             println( getName() + " plan=init WARNING:" + e.getMessage() );
+	             //QActorContext.terminateQActorSystem(this); 
+	          }
+	          }
+	          }, 
+	          new String[]{"true","M","turn" },
+	          600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

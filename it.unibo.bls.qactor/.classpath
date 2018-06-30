@@ -99,35 +99,18 @@
 			<attribute name="gradle_used_by_scope" value="test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/aLabDemoIotGit/IotUniboDemo/it.unibo.bls.qactor/libs/uniboInterfaces.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/aLabDemoIotGit/IotUniboDemo/it.unibo.bls.qactor/libs/unibonoawtsupports.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/aLabDemoIotGit/IotUniboDemo/it.unibo.bls.qactor/libs/uniboEnvBaseAwt.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/aLabDemoIotGit/IotUniboDemo/it.unibo.bls.qactor/libs/2p301.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/aLabDemoIotGit/IotUniboDemo/it.unibo.bls.qactor/libs/qa18Akka.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/aLabDemoIotGit/IotUniboDemo/it.unibo.bls.qactor/libs/blsoo.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/2p301.jar"/>
+	<classpathentry kind="lib" path="libs/blsoo.jar"/>
+	<classpathentry kind="lib" path="libs/qa18Akka.jar"/>
+	<classpathentry kind="lib" path="libs/unibo-button-1.0.0.jar"/>
+	<classpathentry kind="lib" path="libs/uniboEnvBaseAwt.jar"/>
+	<classpathentry kind="lib" path="libs/uniboInterfaces.jar"/>
+	<classpathentry kind="lib" path="libs/unibonoawtsupports.jar"/>
+	<classpathentry kind="lib" path="libs/nanoHTTPD.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

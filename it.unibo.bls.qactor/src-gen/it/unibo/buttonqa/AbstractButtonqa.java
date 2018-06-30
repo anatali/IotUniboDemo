@@ -73,8 +73,22 @@ public abstract class AbstractButtonqa extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"buttonqa STARTS\"";
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(1000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "\"buttonqa EMITS\"";
 	    	println( temporaryStr );  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "usercmd(CMD)","usercmd(\"pressed\")", guardVars ).toString();
+	    	emit( "usercmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(1000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "\"buttonqa EMITS\"";
+	    	println( temporaryStr );  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "usercmd(CMD)","usercmd(\"pressed\")", guardVars ).toString();
+	    	emit( "usercmd", temporaryStr );
 	    	repeatPlanNoTransition(pr,myselfName,"buttonqa_"+myselfName,false,false);
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );

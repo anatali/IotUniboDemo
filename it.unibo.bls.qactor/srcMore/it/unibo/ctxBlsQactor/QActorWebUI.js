@@ -7,25 +7,26 @@ var curSpeed = "low";
  */
     var sock = new WebSocket("ws://"+document.location.host, "protocolOne");
     sock.onopen = function (event) {
-         //console.log("QActorWebUI.js : I am connected to server.....");
-         document.getElementById("connection").value = 'CONNECTED';
+         console.log("QActorWebUI.js : I am connected to server.....");
+         //document.getElementById("connection").value = 'CONNECTED';
     };
     sock.onmessage = function (event) {
-        //console.log("QActorWebUI.js : "+event.data);
+        console.log("QActorWebUI.js : "+event.data);
         //alert( "onmessage " + event);
-        document.getElementById("state").value = ""+event.data;
+       // document.getElementById("state").value = ""+event.data;
     }
     sock.onerror = function (error) {
-        //console.log('WebSocket Error %0',  error);
-        document.getElementById("state").value = ""+error;
+        console.log('WebSocket Error ' +  error);
+        //document.getElementById("state").value = ""+error;
     };
     
 	function setSpeed(val){
 		curSpeed = val;
-		document.getElementById("speed").value = curSpeed;
+		//document.getElementById("speed").value = curSpeed;
 	}
-	function send(message) {
-		document.getElementById("sending").value = ""+message;
+	function send(message) { 
+		//document.getElementById("sending").value = ""+message;
+		console.log('WebSocket send %0',  message);
 		sock.send(message);
 	};
 /*	
