@@ -6,7 +6,6 @@ pubSubServer  "tcp://localhost:1883"    		//for testing
 
 Context ctxBlsQactorMqtt ip [ host="localhost"  port=8019 ]      
 
-
 QActor buttonqamqtt  context ctxBlsQactorMqtt -pubsub{  
 	Plan init normal[
 		delay 1000;
@@ -17,7 +16,6 @@ QActor buttonqamqtt  context ctxBlsQactorMqtt -pubsub{
 		emit usercmd : usercmd("pressed")
 	]
 }  
-
 QActor controlqamqtt  context ctxBlsQactorMqtt -pubsub{  
 	Plan init normal[  
 		println("controlqa STARTS")
@@ -36,7 +34,6 @@ QActor controlqamqtt  context ctxBlsQactorMqtt -pubsub{
 	]
 	switchTo init 
 }    
-
 QActor ledqamqtt  context ctxBlsQactorMqtt -pubsub{  
 	Plan init normal[
 		println("ledqa STARTS")
