@@ -1,7 +1,6 @@
 System blsQactor  
 Event usercmd      : usercmd(CMD)  				//from web gui              
 Dispatch turn      : turn(X) 					// X = on/off         
-
 Context ctxBlsQactor ip [ host="localhost"  port=8019 ]    -httpserver  
 QActor buttonqa  context ctxBlsQactor{  
 	Plan init normal[
