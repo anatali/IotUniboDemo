@@ -1,8 +1,11 @@
 System blsQactor  
 Event usercmd      : usercmd(CMD)  				//from web gui              
 Dispatch turn      : turn(X) 					// X = on/off         
-Context ctxBlsQactor ip [ host="localhost"  port=8019 ]    -httpserver  
-QActor buttonqa  context ctxBlsQactor{  
+
+
+
+Context ctxBlsQactor ip [ host="localhost"  port=8019 ]  -httpserver  
+QActor buttonqa  context ctxBlsQactor -g blue{  
 	Plan init normal[
 		delay 1000;
 		println("buttonqa EMITS");
@@ -12,7 +15,7 @@ QActor buttonqa  context ctxBlsQactor{
 		emit usercmd : usercmd("pressed")
 	]
 }  
-QActor controlqa  context ctxBlsQactor{  
+QActor controlqa  context ctxBlsQactor -g yellow{  
 	Plan init normal[  
 		println("controlqa STARTS")
 	]
@@ -29,7 +32,7 @@ QActor controlqa  context ctxBlsQactor{
 	]
 	switchTo init 
 }    
-QActor ledqa  context ctxBlsQactor{  
+QActor ledqa  context ctxBlsQactor -g green{  
 	Plan init normal[
 		println("ledqa STARTS")
 	]

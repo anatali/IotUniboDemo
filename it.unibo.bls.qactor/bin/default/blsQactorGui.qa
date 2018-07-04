@@ -4,13 +4,12 @@ Dispatch turn      : turn(X) 					// X = on/off
  
 Context ctxBlsQactorGui ip [ host="localhost"  port=8059 ]      
 
-
 QActor buttonqagui  context ctxBlsQactorGui{  
 	Plan init normal[
 		javaRun  it.unibo.buttonqagui.blsGuiFactory.createButton("press");
 		delay 600000
 	]
-}  
+}   
 
 QActor controlqagui  context ctxBlsQactorGui{  
 	Plan init normal[  

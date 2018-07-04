@@ -10,7 +10,7 @@ QActor buttonqamqtt  context ctxBlsQactorMqtt -pubsub{
 	Plan init normal[
 		delay 1000;
 		println("buttonqa EMITS");
-		emit usercmd : usercmd("pressed");
+		emit usercmd : usercmd("pressed");  
 		delay 1000;
 		println("buttonqa EMITS");
 		emit usercmd : usercmd("pressed")
