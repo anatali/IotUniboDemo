@@ -1,0 +1,169 @@
+/*
+ * This is A MODEL of a  domain-driven system
+ * The design space is centered on the resource model and on the actions
+ * to be performed when some resource item changes
+ * The actions are not executed in direct way; rather they are triggered by events.
+ */  
+System blsMvc  
+Event sensorEvent : sensorEvent(  NAME, DATA )	 
+Event changeModel : changeModelItem( TYPE, CATEG, NAME, VALUE )
+Event ctrlEvent   : ctrlEvent( CATEG, NAME,CMD   ) 	//CMD depends on CATEG/NAME
+
+Event inputCtrlEvent  : inputEvent( CATEG, NAME, VALUE )	 
+Event outputCtrlEvent : outputEvent( DATA )	//DATA : integer
+
+Event local_click : clicked(N)
+
+pubSubServer "tcp://localhost:1883"  
+//pubSubServer "tcp://192.168.43.229:1883"  
+//pubSubServer  "tcp://m2m.eclipse.org:1883"     
+//pubSubServer  "tcp://test.mosquitto.org:1883"  
+
+Context blsMvcCtx ip [ host="localhost"  port=8019 ]   //-httpserver 
+EventHandler evadapter for sensorEvent  { //maps a sensorEvent from t1 into a inputCtrlEvent
+	emit inputCtrlEvent fromContent sensorEvent( t1, DATA ) to inputEvent( temperature, t1, DATA )
+};
+/*
+ * CONTROL model-based
+ * works by reacting to inputCtrlEvent  emitted by a change of a sensor model
+ * performs ACTIONS that change the model of some sensor/actuator resource  
+ * and activates changedModelAction/3 that performs an action for the world
+ */
+QActor mvccontroller context blsMvcCtx  -pubsub{
+Rules{ //The model is in the theory resourceModel. 
+	   //Here we write the actions to be performs when the model changes.
+	   //The change of the temperature t1 could modify a Led
+	limitTemperatureValue( 25 ).
+	changedModelAction( temperature, t1, V  ):-
+			limitTemperatureValue( MAX ), 
+ 		    eval( ge, V , MAX ), !,   
+ 		    changeModelItem( leds, led1, on).		     
+ 	changedModelAction( temperature, t1, V  ):-	  
+ 			changeModelItem( leds, led1, off).     			 		
+ 	
+ 	//The change of a Led model must activate an actuator (working as an event listener)
+  	changedModelAction( leds, led1, V  ):-
+  			emitevent( ctrlEvent, ctrlEvent( leds, led1, V) ).
+ 			
+ }
+	Plan init normal [         
+		demo consult("./resourceModel.pl");  //contains the models and related rules
+   		println( qacontrol(starts)  )   
+   	]
+   	switchTo waitForInputEvent      
+ 
+    Plan waitForInputEvent[  ]  
+    transition stopAfter 6000000 
+     	whenEvent inputCtrlEvent -> handleInputEvent,
+     	whenEvent local_click -> handleClickEvent
+    finally repeatPlan	
+       
+    Plan handleInputEvent resumeLastPlan [   
+//      	printCurrentEvent;  
+    	onEvent inputCtrlEvent : inputEvent( CATEG, NAME, VALUE ) ->  //change the model
+    		demo changeModelItem( CATEG, NAME, VALUE )
+    ]
+    Plan handleClickEvent resumeLastPlan [   
+//      	printCurrentEvent;  
+      		emit ctrlEvent : ctrlEvent(leds, led1, switch)
+    ]
+}
+
+QActor btuuonmockgui context blsMvcCtx {
+	Plan init normal [         
+   		println( ledmockgui(starts)  ) ;
+   		javaRun it.unibo.custom.gui.customBlsGui.createCustomButtonGui()   
+   	]
+	
+}
+/*
+ * ACTUATOR
+ * manage a Led working with a SPECIFIC Led implementation
+ */
+QActor ledmockgui context blsMvcCtx -pubsub{
+	Plan init normal [         
+   		println( ledmockgui(starts)  ) ;
+   		javaRun it.unibo.custom.gui.customBlsGui.createCustomLedGui()   
+   	]
+   	switchTo waitForCommand     
+  
+    Plan waitForCommand[  ]  
+    transition stopAfter 100000 
+     	whenEvent ctrlEvent -> handleCmd
+    finally repeatPlan	
+   	 
+	Plan handleCmd resumeLastPlan[
+//  		printCurrentEvent;
+		onEvent ctrlEvent : ctrlEvent(leds, led1, on)  -> 
+			javaRun it.unibo.custom.gui.customBlsGui.setLed("on");
+		onEvent ctrlEvent : ctrlEvent(leds, led1, off) -> 
+			javaRun it.unibo.custom.gui.customBlsGui.setLed("off")
+	]
+}
+
+QActor ledarduino context blsMvcCtx  {
+	Plan init normal [         
+   		println( ledarduino(starts)  );
+    	javaRun it.unibo.utils.arduino.connArduino.initPc("COM9", "9600")   
+   	]
+   	switchTo waitForCommand     
+  
+    Plan waitForCommand[  ]   
+    transition stopAfter 6000000 
+     	whenEvent ctrlEvent -> handleCmd 
+    finally repeatPlan	
+   	 
+	Plan handleCmd resumeLastPlan[
+//  		printCurrentEvent;
+		onEvent ctrlEvent : ctrlEvent(leds, led1, on)  -> 
+			javaRun it.unibo.utils.arduino.connArduino.sendToArduino("1");
+		onEvent ctrlEvent : ctrlEvent(leds, led1, off) -> 
+			javaRun it.unibo.utils.arduino.connArduino.sendToArduino("0")
+	]
+}
+ 
+ 
+/*
+ * INTERACTION WITH RESTFUL  frontend server
+ */
+QActor tofronted context blsMvcCtx  {
+	Plan init normal  [
+   		println( sendertofronted(starts)  ) 		
+	]
+ 	switchTo  waitForCommand
+ 	      
+    Plan waitForCommand[  ]   
+    transition stopAfter 6000000 
+     	whenEvent ctrlEvent -> handleCtrlEvent 
+    finally repeatPlan	  
+  
+    Plan handleCtrlEvent resumeLastPlan [   
+    	printCurrentEvent;
+    	onEvent ctrlEvent : ctrlEvent(leds, led1, switch)  ->
+      	javaRun it.unibo.frontend.restClientHttp.sendPutLed( 
+    			"true", "http://localhost:8080/ledSwitch" );
+     	onEvent ctrlEvent : ctrlEvent(leds, led1, on)  -> 
+      		javaRun it.unibo.frontend.restClientHttp.sendPutLed( 
+    			"true", "http://localhost:8080/ledSwitch" );
+    	onEvent ctrlEvent : ctrlEvent(leds, led1, off)  -> 
+    		javaRun it.unibo.frontend.restClientHttp.sendPutLed(  
+    			"false", "http://localhost:8080/ledSwitch" )
+    ]
+}  
+ /* 
+ * SENSOR as event emitter FOR TESTING
+ */
+QActor qatemperature context blsMvcCtx  {
+	Plan init normal  [    
+ 		println( qatemperature(starts)  ) ; 
+		delay 3500;
+		emit  sensorEvent :  sensorEvent(  t1, 20 ) ; 
+		delay 1000;
+		emit  sensorEvent :  sensorEvent(  t1, 30 ) ; 
+		delay 1000;
+		emit  sensorEvent :  sensorEvent(  t1, 23 ) ; 
+		delay 1000;
+		emit  sensorEvent :  sensorEvent(  t1, 35 ) ; 
+ 		delay 1000
+    ]
+}

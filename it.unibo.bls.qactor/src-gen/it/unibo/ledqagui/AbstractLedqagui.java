@@ -76,7 +76,8 @@ public abstract class AbstractLedqagui extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
 	    	it.unibo.buttonqagui.blsGuiFactory.createLed( myself  );
-	    	it.unibo.buttonqagui.blsGuiFactory.turnOff( myself  );
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine,"turn(X)","turn(off)", guardVars ).toString();
+	    	sendMsg("turn","ledqagui", QActorContext.dispatch, temporaryStr ); 
 	    	temporaryStr = "\"ledqa STARTS\"";
 	    	println( temporaryStr );  
 	    	//switchTo work

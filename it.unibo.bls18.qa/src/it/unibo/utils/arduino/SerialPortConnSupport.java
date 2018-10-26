@@ -1,0 +1,106 @@
+package it.unibo.utils.arduino;
+
+import java.util.ArrayList;
+import java.util.List;
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+import it.unibo.is.interfaces.IOutputView;
+import it.unibo.system.SituatedPlainObject;
+
+public class SerialPortConnSupport extends SituatedPlainObject implements ISerialPortInteraction, SerialPortEventListener{
+final static int SPACE_ASCII = 32;
+final static int DASH_ASCII = 45;
+final static int NEW_LINE_ASCII = 10;
+final static int CR_ASCII = 13;
+	
+
+private SerialPort serialPort;
+private List<String> list;
+private String curString = "";
+ 
+
+//private BufferedReader input;
+
+	public SerialPortConnSupport( SerialPort serialPort, IOutputView outView ) {
+		super(outView);
+		this.serialPort = serialPort;
+		init();
+	}	
+	protected void init( ){
+		try {
+			serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
+			list          = new ArrayList<String>();			
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+		}		
+	}
+	@Override
+	public void sendALine(String msg) throws Exception {
+  		serialPort.writeBytes(msg.getBytes());
+  		serialPort.writeString("\n");
+//		println("SerialPortConnSupport has sent   " + msg);
+	}
+	//FEB2018 for mBot
+	public void sendCmd(String msg) throws Exception {
+  		serialPort.writeBytes(msg.getBytes());
+ 	}
+	public void sendCmd(byte[] cmd) throws Exception {
+  		serialPort.writeBytes(cmd);
+ 	}
+	@Override
+	public void sendALine(String msg, boolean isAnswer) throws Exception {
+		sendALine( msg );		
+ 	}	
+ 	@Override 
+	public synchronized String receiveALine() throws Exception { 	
+// 		println(" SerialPortConnSupport receiveALine   " );
+ 		String result = "no data";
+ 		while( list.size() == 0 ){
+  			//println("list empty. I'll wait" );
+ 			wait();
+ 		} 
+		result = list.remove(0);
+//		if( result.startsWith("msg") ) println("SerialPortConnSupport receiveALine: " + result);
+		return result;
+  	}
+	@Override
+	public void closeConnection() throws Exception {
+		if (serialPort != null) {
+			serialPort.removeEventListener();
+			serialPort.closePort();
+		}
+	}
+	
+	@Override
+	public void serialEvent(SerialPortEvent event) {		
+		 if(event.isRXCHAR() && event.getEventValue() > 0) {
+            try {
+                String data  = serialPort.readString( event.getEventValue() );   
+                 String[] ds  = data.split("\n");
+                if( ds.length > 0 ) data = ds[0]; else return;  
+//                println("SerialPortConnSupport serialEvent2: ds.length=" + ds.length );                                           
+//	            this.notifyTheObservers(data);  //an observer can see the received data as it is
+	            if( ds.length == 2 ) updateLines(data+"\n"); else updateLines(data );
+            }catch (SerialPortException ex) {
+                println("Error in receiving string from COM-port: " + ex);
+            }
+        }		
+	}
+	 
+	protected synchronized void updateLines(String data){
+//		println("SerialPortConnSupport updateLines ... " + data + " " + data.length() + " " + data.endsWith("@"));    
+		if( data.length()>0) {
+            curString = curString + data;
+            //println("updateLines curString= " +  curString + " / " + curString.length());
+            if( data.endsWith("\n")    ) {
+//  	 			println("updateLines curString= " +  curString  );
+				list.add(curString);
+				this.notifyAll();
+				curString = "";
+			}
+		}
+	}
+	
+}

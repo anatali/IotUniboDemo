@@ -6,6 +6,7 @@ Context ctxBlsQactorGui ip [ host="localhost"  port=8059 ]
 
 QActor buttonqagui  context ctxBlsQactorGui{  
 	Plan init normal[
+		//TODO: model the Button as a CoAP THING observable by a client local to this qa that emits the event usercmd
 		javaRun  it.unibo.buttonqagui.blsGuiFactory.createButton("press");
 		delay 600000
 	]
@@ -16,7 +17,7 @@ QActor controlqagui  context ctxBlsQactorGui{
 		println("controlqa STARTS")
 	]
 	transition stopAfter 600000
-	whenEvent usercmd -> pressedOdd
+	whenEvent usercmd -> pressedOdd			//emitted by buttonqagui
 	
 	Plan pressedOdd [
 		forward ledqagui -m turn : turn(on)
@@ -33,18 +34,21 @@ QActor controlqagui  context ctxBlsQactorGui{
 
 QActor ledqagui  context ctxBlsQactorGui{  
 	Plan init normal[
+		//TODO: model the Led as a CoAP THING
 		javaRun it.unibo.buttonqagui.blsGuiFactory.createLed();
-		javaRun it.unibo.buttonqagui.blsGuiFactory.turnOff();
+		//javaRun it.unibo.buttonqagui.blsGuiFactory.turnOff();
+		forward ledqagui -m turn : turn(off); //automsg
 		println("ledqa STARTS")
 	] 
-	switchTo work  
+	switchTo work   
 	
 	Plan work[]
-	transition stopAfter 60000
+	transition stopAfter 60000 
 	whenMsg turn -> doJob
 	finally repeatPlan
 	
 	Plan doJob resumeLastPlan[
+		//printCurrentMessage;
 		onMsg turn : turn(off) -> javaRun it.unibo.buttonqagui.blsGuiFactory.turnOff();
 		onMsg turn : turn(on)  -> javaRun it.unibo.buttonqagui.blsGuiFactory.turnOn()
 	]

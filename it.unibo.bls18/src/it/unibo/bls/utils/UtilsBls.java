@@ -6,7 +6,7 @@ import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class Utils {
+public class UtilsBls {
 
 	public static Frame initFrame(int dx, int dy){
  		Frame frame         = new Frame();

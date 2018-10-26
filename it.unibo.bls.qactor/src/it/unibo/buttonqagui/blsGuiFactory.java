@@ -8,8 +8,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import it.unibo.bls.devices.ButtonAsGuiBasic;
 import it.unibo.bls.devices.LedAsGui;
-import it.unibo.bls.interfaces.IButton;
-import it.unibo.bls.interfaces.ILed;
 import it.unibo.qactors.akka.QActor;
 
 public class blsGuiFactory {
@@ -23,11 +21,10 @@ private static LedAsGui led;
 		new ButtonAsGuiBasic(frame, label, listener);	
  	}
 	public static void createLed(QActor qa  ){
-		Frame frame =  initFrame(400,200);
-		led = new LedAsGui(frame);
- 		led.turnOff();
- 	}
-
+		Frame frame =  initFrame(180,150); 
+		led = (LedAsGui) LedAsGui.createLed(frame);
+  	}
+ 
 	public static void turnOn(QActor qa ) {
 		led.turnOn();
 	}

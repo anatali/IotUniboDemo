@@ -81,6 +81,21 @@ MQTT
  	// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
 	compile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.1.0'
 
+/*
+ADDED by the application designer for COAP
+*/
+// https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
+compile group: 'org.eclipse.californium', name: 'californium-core', version: '2.0.0-M12'
+
+// https://mvnrepository.com/artifact/org.eclipse.californium/californium-proxy
+compile group: 'org.eclipse.californium', name: 'californium-proxy', version: '2.0.0-M12'
+
+/*
+ADDED by the application designer for MONGO
+*/
+// https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
+compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.8.2'
+
 }
 
 
