@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+   		<meta charset="utf-8">
+        <title>LedThing</title>
+        <link rel="stylesheet" href="style.css">
+     <script type="text/javascript" src="/socket.io/socket.io.js">  </script>
+
+     <!--
+     ==============================================
+     RECEIVE INFO (from server via WebSocket)
+     ==============================================
+     -->    
+    <script type="text/javascript">
+      var socket = io.connect();
+      socket.on('message', function (info) {
+       		document.getElementById('output').innerHTML = info;
+      });
+    </script>
+
+    </head>
+
+    <body>
+     
+        <h1>Access to the Led-Thing</h1>
+        <p>Please activate a CoAp server (e.g. <tt>MainCoapBasicLed</tt>) </p>
+ 	 <!--
+     ==============================================
+     INPUT FORMS
+     ==============================================
+     -->    
+        <form method="post" action="/ledSwitch">
+            <label></label> 
+            <input type="submit" value="ledSwitch">
+        </form>
+        
+        <form method="get" action="/Led">
+            <label></label> 
+            <input type="submit" value="led state">
+        </form>
+        
+        <br/><br/>
+        
+	 <!--
+     ==============================================
+     OUTPUT AREA
+     ==============================================
+     -->    
+        <div>
+        <b>Resource View</b>: <span id="output"> </span> 
+       	</div>
+      
+    </body>
+</html>
